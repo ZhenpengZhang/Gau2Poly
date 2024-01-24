@@ -1,0 +1,55 @@
+{   "Title":"PA+NH2",
+	"Method": "M062X", 
+	"Basis":"jun-cc-pVTZ",
+	"freqscale":"0.971",
+	"Temperature": [
+		200,
+		298,
+		300,
+		400,
+		500,
+		600,
+		700,
+		800,
+		900,
+		1000,
+		1100,
+		1200,
+		1300,
+		1400,
+		1500,
+		1600,
+		1700,
+		1800,
+		1900,
+		2000
+	],
+	"Species":[
+		{
+			"name":"PA",
+			"type":"REACT1",
+			"Gemo":"NONLINRP"
+		},
+
+
+		{
+			"name": "NH2",
+			"type": "REACT2",
+			"Gemo":"NONLINRP"
+		},
+		{
+			"name":"TS",
+			"type":"START",
+			"Gemo":"NOLINTS"
+		},
+		{	"name": "P1",
+			"type": "PROD1",
+			"Gemo":"NOLINRP"
+		},
+		{
+			"name": "NH3",
+			"type": "PROD2",
+			"Gemo":"NOLINRP"
+		}
+	]
+				   }
