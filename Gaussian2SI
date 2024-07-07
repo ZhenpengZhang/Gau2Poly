@@ -1,0 +1,84 @@
+import glob
+import pandas as pd
+
+
+# 解析文件，提取坐标
+def extract_coordinates(file):
+    start = 0
+    end = 0
+    coordinates = []
+    rline = open(file, "r").readlines()
+    for i in range(len(rline)):
+        if "Standard orientation:" in rline[i]:
+            start = i
+    if start == 0:
+        for i in range(len(rline)):
+            if "Input orientation:" in rline[i]:
+                start = i
+    for m in range(start + 5, len(rline)):
+        if "---" in rline[m]:
+            end = m
+            break
+    for line in rline[start + 5:end]:
+        words = line.split()
+        word1 = int(words[1])
+        wordx = float(words[3])
+        wordy = float(words[4])
+        wordz = float(words[5])
+        if word1 == 17:
+            word1 = "Cl"
+        elif word1 == 9:
+            word1 = "F "
+        elif word1 == 35:
+            word1 = "Br"
+        elif word1 == 5:
+            word1 = "B "
+        elif word1 == 46:
+            word1 = "Pd"
+        elif word1 == 6:
+            word1 = "C "
+        elif word1 == 1:
+            word1 = "H "
+        elif word1 == 7:
+            word1 = "N "
+        elif word1 == 8:
+            word1 = "O "
+        elif word1 == 16:
+            word1 = "S "
+        coordinates.append((word1,wordx, wordy, wordz))
+    return coordinates
+
+def extract_frequencies(file_path):
+    all_frequencies = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            if "Frequencies --" in line:
+                frequencies = line.strip().split()[-3:]
+                frequencies = [float(freq) for freq in frequencies]
+                all_frequencies.append(frequencies)
+    return all_frequencies
+# 获取所有 .out 文件
+out_files = glob.glob('*.out')
+
+# 获取所有 .log 文件
+log_files = glob.glob('*.log')
+
+# 将两个列表合并
+all_files = out_files + log_files
+
+#将输出文件合并到excel中
+
+data = []
+for file in all_files:
+    coordinates = extract_coordinates(file)
+    frequencies = extract_frequencies(file)
+    length = min(len(coordinates), len(frequencies))
+    for i in range(length):
+        data.append([file, *coordinates[i],'', *frequencies[i]])
+    data.append('')#每个输出文件之间添加一个空行
+
+df = pd.DataFrame(data, columns=['File', 'Element', 'X', 'Y', 'Z', '', 'Freq1', 'Freq2', 'Fre3'])
+
+df.to_excel('output.xlsx', index=False)
+
+
