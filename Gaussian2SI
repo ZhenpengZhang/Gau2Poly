@@ -57,6 +57,13 @@ def extract_frequencies(file_path):
                 frequencies = [float(freq) for freq in frequencies]
                 all_frequencies.append(frequencies)
     return all_frequencies
+def extract_energy(path):
+    file = open(path, 'r')
+    rline = file.readlines()
+    for i in range(len(rline)):
+        if "SCF Done:" in rline[i]:
+            scf_energy = rline[i].split()[4]
+    return scf_energy
 # 获取所有 .out 文件
 out_files = glob.glob('*.out')
 
@@ -73,11 +80,12 @@ for file in all_files:
     coordinates = extract_coordinates(file)
     frequencies = extract_frequencies(file)
     length = min(len(coordinates), len(frequencies))
+    data.append([file[:-4],'SCF ENERGY',extract_energy(file)])#提取单点能
     for i in range(length):
-        data.append([file, *coordinates[i],'', *frequencies[i]])
-    data.append('')#每个输出文件之间添加一个空行
+        data.append([*coordinates[i],'', *frequencies[i]])
 
-df = pd.DataFrame(data, columns=['File', 'Element', 'X', 'Y', 'Z', '', 'Freq1', 'Freq2', 'Fre3'])
+
+df = pd.DataFrame(data, columns=[ 'Element', 'X', 'Y', 'Z', '', 'Freq1', 'Freq2', 'Fre3'])
 
 df.to_excel('output.xlsx', index=False)
 
