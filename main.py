@@ -155,7 +155,7 @@ if dictionary['PROD2']:
             if i % 6 == 0:
                 dat.write('\n')
         dat.write('  END\n\n')
-        dat.write('  *TUNNEL\n\n''SCT\n\n''*RATE\n\n' ' SIGMAF\n'  ' BOTHK\n'' TST\n'' CVT\n\n')
+        dat.write('  *TUNNEL\n\n''SCT\n\n''*RATE\n\n' ' SIGMAF   1\n'  ' BOTHK\n'' TST\n'' CVT\n\n')
         dat.write('  TEMP\n')
         for Tem in Temperature:
             dat.write(' '+str(Tem)+'.\n')
