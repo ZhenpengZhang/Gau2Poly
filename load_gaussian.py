@@ -43,15 +43,24 @@ def calculate_distance(atom1, atom2):
 
 # 寻找过渡原子
 def transition_atom(atoms):
-    pairs = [('C', 1.15, 1.6), ('H', 0.9, 1.6), ('O', 1.0, 1.6), ('N', 1.15, 1.6)]
-    for i, atom1 in enumerate(atoms):
-        if atom1[0].strip() != 'H':
-            continue
-        if sum(any(atom2[0].strip() == atom and d_min < calculate_distance(atom1, atom2) < d_max for atom2 in atoms if
-                   atom1 != atom2)
-               for atom, d_min, d_max in pairs) >= 2:
-            return i + 1
-    return 0
+    transition_atom = 0
+    for i in range(len(atoms)):
+        if atoms[i][0].strip() == 'H':
+            within_range_count = 0
+            for j in range(len(atoms)):
+                if i != j:  # 不比较原子和它自己的距离
+                    dist = calculate_distance(atoms[i], atoms[j])
+                    if atoms[j][0].strip() == 'C' and 1.15 < dist < 1.6:
+                        within_range_count += 1
+                    if atoms[j][0].strip() == 'H' and 0.9 < dist < 1.6:
+                        within_range_count += 1
+                    if atoms[j][0].strip() == 'O' and 1.0 < dist < 1.6:
+                        within_range_count += 1
+                    if atoms[j][0].strip() == 'N' and 1.15 < dist < 1.6:
+                        within_range_count += 1
+            if within_range_count >= 2:
+                transition_atom = i + 1
+    return transition_atom
 
 #提取INDEF信息，需要Z矩阵坐标
 def obtain_index(file):
